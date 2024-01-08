@@ -1,37 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Telegram Bot Messaging</title>
+  <meta charset="UTF-8">
+  <title>Send File to Telegram Bot</title>
 </head>
 <body>
+  <h1>Send File to Telegram Bot</h1>
+  
+  <form id="fileForm" enctype="multipart/form-data">
+    <input type="file" id="fileInput" name="file">
+    <button type="button" onclick="sendToTelegram()">Send File</button>
+  </form>
+  
+  <script>
+    function sendToTelegram() {
+      const BOT_TOKEN = "6184053476:AAGTb4xDA1C-Ru0bOvG1VmLwrZFN429OG1w";
+      const CHAT_ID = "5350055035";
+      
+      const formData = new FormData(document.getElementById('fileForm'));
+      formData.append('chat_id', CHAT_ID);
+      formData.append('document', document.getElementById('fileInput').files[0]);
 
-<form id="messageForm">
-    <label for="message">Message:</label><br>
-    <input type="text" id="message" name="message"><br>
-    <button type="submit">Send Message</button>
-</form>
-
-<script>
-    document.getElementById("messageForm").addEventListener("submit", function(event) {
-        event.preventDefault();
-        const BOT_TOKEN = "6184053476:AAGTb4xDA1C-Ru0bOvG1VmLwrZFN429OG1w";
-        const CHAT_ID = "5350055035";
-        const message = document.getElementById("message").value;
-
-        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${message}`, {
-            method: 'GET',
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            alert("Message sent successfully!");
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("Failed to send message.");
-        });
-    });
-</script>
-
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('File sent successfully!');
+        } else {
+          alert('Failed to send file.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while sending the file.');
+      });
+    }
+  </script>
 </body>
 </html>
